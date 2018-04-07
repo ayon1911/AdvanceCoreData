@@ -28,6 +28,7 @@ class CompaniesVC: UITableViewController, CreateCompanyDelegate {
     fileprivate func additionalNavBarSetup () {
         navigationItem.title = "Companies"
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "plus"), style: UIBarButtonItemStyle.plain, target: self, action: #selector(handleAddCompany))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Reset", style: .plain, target: self, action: #selector(handleResetCompany))
     }
     
     func setupTableView() {
@@ -41,6 +42,23 @@ class CompaniesVC: UITableViewController, CreateCompanyDelegate {
         let navController = CustomNavController(rootViewController: createCompanyVC)
         createCompanyVC.delegate = self
         present(navController, animated: true, completion: nil)
+    }
+    
+    @objc private func handleResetCompany() {
+        let context = CoreDataManager.shared.persistanceContainer.viewContext
+        let deleteBatchDelete = NSBatchDeleteRequest(fetchRequest: Company.fetchRequest())
+        do {
+            try context.execute(deleteBatchDelete)
+            var indexPathsToRemove = [IndexPath]()
+            for (index, _) in companies.enumerated() {
+                let indexPath = IndexPath(row: index, section: 0)
+                indexPathsToRemove.append(indexPath)
+            }
+            companies.removeAll()
+            tableView.deleteRows(at: indexPathsToRemove, with: .left)
+        } catch let err {
+            debugPrint(err as Any)
+        }
     }
     
     func didAddCompany(company: Company) {
@@ -73,6 +91,19 @@ extension CompaniesVC {
         return view
     }
     
+    override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        let label = UILabel()
+        label.text = "No Companies available"
+        label.textColor = .white
+        label.textAlignment = .center
+        label.font = UIFont(name: "AvenirNext-Medium", size: 20.0)
+        return label
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return companies.count == 0 ? 150.0 : 0.0
+    }
+    
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 45.0
     }
@@ -86,7 +117,9 @@ extension CompaniesVC {
             dateFormatter.dateFormat = "MMM dd, yyyy"
             let formatedDate = dateFormatter.string(from: founded)
             cell.textLabel?.text = "\(name) - Founded \(formatedDate)"
-            
+            if let imageData = company.imageData {
+                cell.imageView?.image = UIImage(data: imageData)
+            }
         } else {
             cell.textLabel?.text = company.name
         }

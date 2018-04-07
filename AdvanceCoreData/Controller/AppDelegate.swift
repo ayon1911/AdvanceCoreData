@@ -63,6 +63,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UINavigationBar.appearance().prefersLargeTitles = true
         UINavigationBar.appearance().largeTitleTextAttributes = [NSAttributedStringKey.foregroundColor: UIColor.white,
                                                                         NSAttributedStringKey.font: UIFont(name: "AvenirNext-Medium", size: 33.5)!]
+        UIBarButtonItem.appearance().setTitleTextAttributes([NSAttributedStringKey.font: UIFont(name: "AvenirNext-Medium", size: 20.0)!], for: .normal)
+
     }
 
 }

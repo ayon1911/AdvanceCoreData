@@ -23,6 +23,10 @@ class CreateCompanyVC: UIViewController {
             nameTextField.text = company?.name
             guard let founded = company?.founded else{ return }
             datePicker.date = founded
+            if let imageData = company?.imageData {
+                comopanyImageView.image = UIImage(data: imageData)
+                circularImageStyle()
+            }
         }
     }
     let nameLabel: UILabel = {
@@ -43,6 +47,7 @@ class CreateCompanyVC: UIViewController {
         let imageView = UIImageView(image: #imageLiteral(resourceName: "photo"))
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.isUserInteractionEnabled = true
+        imageView.contentMode = .scaleAspectFill
         imageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleSelectPhoto)))
         return imageView
     }()
@@ -51,7 +56,7 @@ class CreateCompanyVC: UIViewController {
         let dp = UIDatePicker()
         dp.datePickerMode = .date
         dp.translatesAutoresizingMaskIntoConstraints = false
-        return  dp
+        return dp
     }()
     
     override func viewDidLoad() {
@@ -134,6 +139,10 @@ class CreateCompanyVC: UIViewController {
         let context = CoreDataManager.shared.persistanceContainer.viewContext
         company?.name = nameTextField.text
         company?.founded = datePicker.date
+        if let companyImage = comopanyImageView.image {
+            let imageData = UIImageJPEGRepresentation(companyImage, 0.8)
+            company?.imageData = imageData
+        }
         do {
             try context.save()
             dismiss(animated: true) {
@@ -149,7 +158,10 @@ class CreateCompanyVC: UIViewController {
         let company = NSEntityDescription.insertNewObject(forEntityName: "Company", into: context)
         company.setValue(nameTextField.text, forKey: "name")
         company.setValue(datePicker.date, forKey: "founded")
-        
+        if let companyImage = comopanyImageView.image {
+            let imageData = UIImageJPEGRepresentation(companyImage, 0.8)
+            company.setValue(imageData, forKey: "imageData")
+        }
         //save to core data
         do {
             try context.save()
@@ -171,10 +183,18 @@ extension CreateCompanyVC: UINavigationControllerDelegate, UIImagePickerControll
         else if let originalImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
             comopanyImageView.image = originalImage
         }
+        circularImageStyle()
         dismiss(animated: true, completion: nil)
     }
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         dismiss(animated: true, completion: nil)
+    }
+    
+    private func circularImageStyle() {
+        comopanyImageView.layer.cornerRadius = comopanyImageView.frame.width / 2
+        comopanyImageView.clipsToBounds = true
+        comopanyImageView.layer.borderColor = UIColor.darkGray.cgColor
+        comopanyImageView.layer.borderWidth = 2
     }
 }
