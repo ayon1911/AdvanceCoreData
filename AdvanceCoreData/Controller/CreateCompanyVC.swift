@@ -61,7 +61,7 @@ class CreateCompanyVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupUI()
+        setupUiConstraints()
         additionalNavBarSetup()
         view.backgroundColor = UIColor.tableviewBackgroudColor
     }
@@ -72,11 +72,11 @@ class CreateCompanyVC: UIViewController {
     }
     //MARK:- setup
     fileprivate func additionalNavBarSetup() {
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", style: UIBarButtonItemStyle.plain, target: self, action: #selector(handleCancel))
+        setupCancelButton()
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Save", style: UIBarButtonItemStyle.plain, target: self, action: #selector(handleSave))
     }
     
-    fileprivate func setupUI() {
+    fileprivate func setupUiConstraints() {
         let lightBackgroundView = UIView()
         lightBackgroundView.backgroundColor = UIColor.headerViewColor
         lightBackgroundView.translatesAutoresizingMaskIntoConstraints = false
@@ -120,10 +120,6 @@ class CreateCompanyVC: UIViewController {
         imagePickerController.delegate = self
         imagePickerController.allowsEditing = true
         present(imagePickerController, animated: true, completion: nil)
-    }
-    
-    @objc private func handleCancel() {
-        dismiss(animated: true, completion: nil)
     }
     
     @objc private func handleSave() {
