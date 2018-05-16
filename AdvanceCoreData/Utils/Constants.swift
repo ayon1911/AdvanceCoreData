@@ -9,5 +9,5 @@
 import Foundation
 
 let COMPANY_CELL_ID = "companyCellId"
-
+let EMPLOYEE_CELL_ID = "employeeCellId"
 

@@ -61,7 +61,7 @@ class CreateCompanyVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupUiConstraints()
+        setupUiWithConstraints()
         additionalNavBarSetup()
         view.backgroundColor = UIColor.tableviewBackgroudColor
     }
@@ -76,15 +76,8 @@ class CreateCompanyVC: UIViewController {
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Save", style: UIBarButtonItemStyle.plain, target: self, action: #selector(handleSave))
     }
     
-    fileprivate func setupUiConstraints() {
-        let lightBackgroundView = UIView()
-        lightBackgroundView.backgroundColor = UIColor.headerViewColor
-        lightBackgroundView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(lightBackgroundView)
-        lightBackgroundView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-        lightBackgroundView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
-        lightBackgroundView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
-        lightBackgroundView.heightAnchor.constraint(equalToConstant: 350).isActive = true
+    fileprivate func setupUiWithConstraints() {
+        let lightBackgroundView = lightBlueBackgroundView(height: 350)
         
         //imageView
         view.addSubview(comopanyImageView)
